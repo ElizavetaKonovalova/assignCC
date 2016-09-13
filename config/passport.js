@@ -3,7 +3,6 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var TwitterStrategy  = require('passport-twitter').Strategy;
 var GoogleStrategy   = require('passport-google-oauth').OAuth2Strategy;
 var TodoistStrategy = require('passport-todoist').Strategy;
-
 var User = require('../app/user');
 var configAuth = require('./auth');
 
@@ -16,11 +15,7 @@ module.exports = function(passport) {
             done(err, user);
         });
     });
-    passport.use('local-login', new LocalStrategy({
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true
-    },
+    passport.use('local-login',new LocalStrategy({usernameField:'email',passwordField:'password',passReqToCallback:true},
     function(req, email, password, done) {
         process.nextTick(function() {
             User.findOne({ 'local.email' :  email }, function(err, user) {
@@ -85,16 +80,13 @@ module.exports = function(passport) {
     }));
 
     passport.use(new FacebookStrategy({
-
         clientID : configAuth.facebookAuth.clientID,
         clientSecret : configAuth.facebookAuth.clientSecret,
         callbackURL : configAuth.facebookAuth.callbackURL,
         scope: configAuth.facebookAuth.scope,
         passReqToCallback : true
-
     },
-    function(req, token, refreshToken, profile, done)
-    {
+    function(req, token, refreshToken, profile, done){
         process.nextTick(function()
         {
             if (!req.user) {
@@ -301,9 +293,9 @@ module.exports = function(passport) {
                         if (user) {
                             if (!user.todoist.token) {
                                 user.todoist.token = token;
-                                user.todoist.name  = profile.displayName;
                                 user.todoist.code = profile.code;
-
+                                user.todoist.email = profile.email;
+                                user.todoist.full_name = profile.full_name;
                                 user.save(function(err) {
                                     if (err)
                                         throw err;
@@ -314,9 +306,10 @@ module.exports = function(passport) {
                         } else {
                             var newUser = new User();
                             newUser.todoist.id    = profile.id;
-                            newUser.todoist.token = token;
-                            newUser.todoist.name  = profile.displayName;
+                            newUser.todoist.token = profile.access_token;
                             newUser.todoist.code = profile.code;
+                            newUser.todoist.email = profile.email;
+                            newUser.todoist.full_name = profile.full_name;
                             newUser.save(function(err) {
                                 if (err)
                                     throw err;
@@ -327,8 +320,9 @@ module.exports = function(passport) {
                     var user = req.user;
                     user.todoist.id    = profile.id;
                     user.todoist.token = token;
-                    user.todoist.name  = profile.displayName;
                     user.todoist.code = profile.code;
+                    user.todoist.email = profile.email;
+                    user.todoist.full_name = profile.full_name;
 
                     user.save(function(err) {
                         if (err)

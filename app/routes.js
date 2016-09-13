@@ -1,3 +1,5 @@
+var User = require('../app/user');
+
 module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
@@ -14,6 +16,11 @@ module.exports = function(app, passport) {
 		req.logout();
 		res.redirect('/');
 	});
+
+    app.get('/read_news',function (req,res) {
+        app.get('')
+        res.render('feed.ejs', {user:req.user});
+    });
 
 	//Local Login
 	app.get('/login', function(req, res){res.render('login.ejs', { message: req.flash('loginMessage') });});
@@ -41,7 +48,6 @@ module.exports = function(app, passport) {
 	//Google Authentication
 	app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 	app.get('/auth/google/callback', passport.authenticate('google', {successRedirect : '/profile',failureRedirect : '/'}));
-
 
 	//Connect Local
 	app.get('/connect/local', function(req, res){res.render('connect-local.ejs',{message: req.flash('loginMessage')});});
@@ -78,7 +84,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/unlink/facebook', function(req, res) {
-		var user            = req.user;
+		var user = req.user;
 		user.facebook.token = undefined;
 		user.save(function(err) {
 			res.redirect('/profile');
@@ -86,7 +92,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/unlink/twitter', function(req, res) {
-		var user           = req.user;
+		var user = req.user;
 		user.twitter.token = undefined;
 		user.save(function(err) {
 			res.redirect('/profile');
@@ -101,9 +107,14 @@ module.exports = function(app, passport) {
 		});
 	});
 
-
+	app.get('/unlink/todoist', function(req, res) {
+		var user = req.user;
+		user.todoist.token = undefined;
+		user.save(function(err) {
+			res.redirect('/profile');
+		});
+	});
 };
-
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())
 		return next();
