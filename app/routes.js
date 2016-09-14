@@ -59,8 +59,13 @@ module.exports = function(app, passport) {
 			});
 		});
 
-		timer_toggl.getWorkspaceProjects(req.user.toggl.wid, function (err, projects) {
-            console.log(projects);
+        /*timer_toggl.startTimeEntry({description: 'testing the api'},function (err,entry) {
+         console.log(entry);
+         });*/
+
+        timer_toggl.getCurrentTimeEntry(function (err, current_entry) {
+            if (!err)
+                console.log(current_entry);
         });
 	});
 
