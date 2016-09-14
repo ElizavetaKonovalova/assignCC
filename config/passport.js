@@ -140,7 +140,7 @@ module.exports = function(passport) {
         consumerKey     : configAuth.twitterAuth.consumerKey,
         consumerSecret  : configAuth.twitterAuth.consumerSecret,
         callbackURL     : configAuth.twitterAuth.callbackURL,
-        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+        passReqToCallback : true
 
     },
     function(req, token, tokenSecret, profile, done) {
@@ -161,6 +161,7 @@ module.exports = function(passport) {
                             user.twitter.token       = token;
                             user.twitter.username    = profile.username;
                             user.twitter.displayName = profile.displayName;
+                            user.twitter.token_secret = tokenSecret;
 
                             user.save(function(err) {
                                 if (err)
@@ -178,6 +179,7 @@ module.exports = function(passport) {
                         newUser.twitter.token       = token;
                         newUser.twitter.username    = profile.username;
                         newUser.twitter.displayName = profile.displayName;
+                        newUser.twitter.token_secret = tokenSecret;
 
                         newUser.save(function(err) {
                             if (err)
@@ -195,6 +197,7 @@ module.exports = function(passport) {
                 user.twitter.token       = token;
                 user.twitter.username    = profile.username;
                 user.twitter.displayName = profile.displayName;
+                user.twitter.token_secret = tokenSecret;
 
                 user.save(function(err) {
                     if (err)
