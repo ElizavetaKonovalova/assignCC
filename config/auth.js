@@ -19,5 +19,8 @@ module.exports = {
 		'clientID' : 'e0e5a002b8ee419b853d7c663c46f6d8',
 		'clientSecret': '88c78a5a859b47838fde33086fd86319',
 		'callbackURL' 	: 'http://localhost:8080/auth/todoist/callback'
+	},
+	'toggl': {
+		'apiToken': 'e79952b6183cdf8442a605d148a18550'
 	}
 };

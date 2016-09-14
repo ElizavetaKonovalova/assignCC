@@ -1,25 +1,31 @@
-<head>
+<head xmlns="http://www.w3.org/1999/html">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 	<style>
-		body { padding-top:80px; }
+		body { padding-top:40px; margin-right: 22%; }
 	</style>
 </head>
 <body>
-<div class="container">
-	<div class="well">
-		<h3><span class="fa fa-user"></span> Local</h3>
-
-		<% if (user.facebook.token) { %>
-		<p>
-			<strong>email</strong>: <%= user.local.email %><br>
-		</p>
-
-		<a href="/unlink/local" class="btn btn-default">Unlink</a>
-		<% } else { %>
-		<a href="/connect/local" class="btn btn-default">Connect Local</a>
-		<% } %>
-
+<div class="container" style="padding-left: 0%;">
+	<div class="row">
+		<div class="col-sm-5">
+			<% for(var i=0; i < facebook_data.length; i++) { %>
+			<div class="well">
+				<%= facebook_data[i].message %>
+			</div>
+			<div class="well">
+				<%= facebook_data[i].story %>
+			</div>
+			<% } %>
+		</div>
+		<div class="col-sm-5">
+			<% for(var i=0; i < twitter_data.length; i++) { %>
+			<p class="well">
+				<%= twitter_data[i].text %> <br><br>
+				<b>Posted by: </b><%= twitter_data[i].user.name%>
+			</p>
+			<% } %>
+		</div>
 	</div>
 </div>
 </body>

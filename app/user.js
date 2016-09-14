@@ -20,6 +20,7 @@ var userSchema = mongoose.Schema({
     {
         id : String,
         token : String,
+        token_secret: String,
         displayName : String,
         username : String
     },
@@ -39,6 +40,16 @@ var userSchema = mongoose.Schema({
         code: String,
         email: String,
         full_name: String
+    },
+
+    toggl:
+    {
+        id: String,
+        wid: String,
+        fullname: String,
+        email: String
+
+
     }
 });
 

@@ -1,4 +1,10 @@
 var User = require('../app/user');
+var sendRequest = require('request');
+var graphFB = require('fbgraph');
+var json_query = require('json-query');
+var twitter_api = require('twit');
+var configAuth = require('../config/auth');
+var toggl = require('toggl-api');
 
 module.exports = function(app, passport) {
 
@@ -7,9 +13,55 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/profile', isLoggedIn, function(req, res) {
-		res.render('profile.ejs', {
-			user : req.user
+		res.render('profile.ejs', {user : req.user});
+
+		var timer_toggl = new toggl(configAuth.toggl);
+
+		timer_toggl.getUserData('/me', function (err, results) {
+			process.nextTick(function() {
+				if (!req.user) {
+
+					User.findOne({ 'toggl.id' : results.id }, function(err, user) {
+						if (err)
+							return done(err);
+
+						if (user) {
+							return user;
+						} else {
+							// if there is no user, create them
+							var newUser = new User();
+							newUser.toggl.id = results.id;
+							newUser.toggl.fullname = results.fullname;
+							newUser.toggl.wid = results.default_wid;
+							newUser.toggl.email = results.email;
+
+							newUser.save(function(err) {
+								if (err)
+									throw err;
+								return newUser;
+							});
+						}
+					});
+
+				} else {
+					var user = req.user;
+					user.toggl.id = results.id;
+					user.toggl.fullname = results.fullname;
+					user.toggl.wid = results.default_wid;
+					user.toggl.email = results.email;
+					user.save(function(err) {
+						if (err)
+							throw err;
+						return user;
+					});
+				}
+
+			});
 		});
+
+		timer_toggl.getWorkspaceProjects(req.user.toggl.wid, function (err, projects) {
+            console.log(projects);
+        });
 	});
 
 	app.get('/logout', function(req, res) {
@@ -17,10 +69,25 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
-    app.get('/read_news',function (req,res) {
-        app.get('')
-        res.render('feed.ejs', {user:req.user});
-    });
+	app.get('/read_news', function(req, res) {
+		var user = req.user;
+
+		graphFB.setAccessToken(user.facebook.token);
+		graphFB.get('/me/feed', function (err, reply) {
+
+			//Twitter news feed
+			var twitt = new twitter_api({
+				consumer_key : configAuth.twitterAuth.consumerKey,
+				consumer_secret : configAuth.twitterAuth.consumerSecret,
+				access_token: user.twitter.token,
+				access_token_secret: user.twitter.token_secret
+			});
+
+			twitt.get('statuses/home_timeline', function(err, data) {
+				res.render('feed.ejs', {facebook_data: reply.data, twitter_data: data});
+			});
+		});
+	});
 
 	//Local Login
 	app.get('/login', function(req, res){res.render('login.ejs', { message: req.flash('loginMessage') });});
@@ -33,8 +100,9 @@ module.exports = function(app, passport) {
 		failureFlash : true}));
 
 	//Facebook Authentication
-	app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['public_profile,email,user_actions.news,user_actions.video,user_events,user_likes,' +
-		'user_photos,user_posts,manage_pages,publish_pages,rsvp_event,user_friends'] }));
+	app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['public_profile,email,user_actions.news,' +
+	'user_actions.video,user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,rsvp_event,' +
+	'user_friends,user_managed_groups,read_page_mailboxes '] }));
 	app.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect:'/profile',failureRedirect:'/'}));
 
 	//Twitter Authentication
@@ -56,7 +124,8 @@ module.exports = function(app, passport) {
 
 	//Connect Facebook
 	app.get('/connect/facebook', passport.authorize('facebook', {scope : ['public_profile,email,user_actions.news,' +
-	'user_actions.video,user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,rsvp_event,user_friends']}));
+	'user_actions.video,user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,user_managed_groups,' +
+	'rsvp_event,user_friends,read_page_mailboxes']}));
 	app.get('/connect/facebook/callback',passport.authorize('facebook',{successRedirect:'/profile',failureRedirect : '/'}));
 
 	//Connect Twitter
