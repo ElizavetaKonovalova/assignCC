@@ -45,11 +45,9 @@ var userSchema = mongoose.Schema({
     toggl:
     {
         id: String,
-        wid: String,
+        default_wid: String,
         fullname: String,
         email: String
-
-
     }
 });
 

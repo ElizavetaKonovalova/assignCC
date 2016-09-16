@@ -1,27 +1,31 @@
 <!doctype html>
 <html>
 <head>
-	<title>Node Authentication</title>
+	<title>Social Reader</title>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		body 		{ padding-top:80px; }
-	</style>
+	<link rel="stylesheet" href="/vendordist/css/custom.css">
+	<link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
 </head>
 <body>
+
 <div class="container">
-
-	<div class="jumbotron text-center">
-		<h1><span class="fa fa-lock"></span> Node Authentication</h1>
-
-		<p>Login or Register with:</p>
-
-		<a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-		<a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
-		<a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-		<a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
-		<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
-		<a href="/auth/todoist" class="btn btn-danger">Todoist</a>
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Social Reader</h3>
+			<br>
+			<h2>All your social media news in a one place!</h2>
+			<div class="col-md-6 .col-md-offset-3">
+				<ul class="social">
+					<li class="facebook"><a href="/auth/facebook"><i class="fa fa-facebook fa-3x"></i></a></li>
+					<li class="twitter"><a href="/auth/twitter"><i class="fa fa-twitter fa-3x"></i></a></li>
+					<li class="google_plus"><a href="/auth/google"><i class="fa fa-google-plus-square fa-3x"></i></a>
+					</li>
+					<li class="local_login"><a href="/login"><i class="fa fa-sign-in fa-3x"></i></a></li>
+					<li class="todoist"><a href="/auth/todoist"><i class="fa fa-angle-double-down fa-3x"></i></a></li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 </body>

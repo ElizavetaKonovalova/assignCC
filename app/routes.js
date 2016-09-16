@@ -5,6 +5,10 @@ var json_query = require('json-query');
 var twitter_api = require('twit');
 var configAuth = require('../config/auth');
 var toggl = require('toggl-api');
+var toggl_report = require('toggl-reports');
+var express = require('express');
+var jsdom = require('jsdom');
+var jquery = require('jquery');
 
 module.exports = function(app, passport) {
 
@@ -18,54 +22,44 @@ module.exports = function(app, passport) {
 		var timer_toggl = new toggl(configAuth.toggl);
 
 		timer_toggl.getUserData('/me', function (err, results) {
-			process.nextTick(function() {
-				if (!req.user) {
+            process.nextTick(function () {
+                if (!req.user) {
 
-					User.findOne({ 'toggl.id' : results.id }, function(err, user) {
-						if (err)
-							return done(err);
+                    User.findOne({'toggl.id': results.id}, function (err, user) {
+                        if (err)
+                            return done(err);
 
-						if (user) {
-							return user;
-						} else {
-							// if there is no user, create them
-							var newUser = new User();
-							newUser.toggl.id = results.id;
-							newUser.toggl.fullname = results.fullname;
-							newUser.toggl.wid = results.default_wid;
-							newUser.toggl.email = results.email;
+                        if (user) {
+                            return user;
+                        } else {
+                            // if there is no user, create them
+                            var newUser = new User();
+                            newUser.toggl.id = results.id;
+                            newUser.toggl.fullname = results.fullname;
+                            newUser.toggl.default_wid = results.default_wid;
+                            newUser.toggl.email = results.email;
+                            newUser.save(function (err) {
+                                if (err)
+                                    throw err;
+                                return newUser;
+                            });
+                        }
+                    });
 
-							newUser.save(function(err) {
-								if (err)
-									throw err;
-								return newUser;
-							});
-						}
-					});
+                } else {
+                    var user = req.user;
+                    user.toggl.id = results.id;
+                    user.toggl.fullname = results.fullname;
+                    user.toggl.default_wid = results.default_wid;
+                    user.toggl.email = results.email;
+                    user.save(function (err) {
+                        if (err)
+                            throw err;
+                        return user;
+                    });
+                }
 
-				} else {
-					var user = req.user;
-					user.toggl.id = results.id;
-					user.toggl.fullname = results.fullname;
-					user.toggl.wid = results.default_wid;
-					user.toggl.email = results.email;
-					user.save(function(err) {
-						if (err)
-							throw err;
-						return user;
-					});
-				}
-
-			});
-		});
-
-        /*timer_toggl.startTimeEntry({description: 'testing the api'},function (err,entry) {
-         console.log(entry);
-         });*/
-
-        timer_toggl.getCurrentTimeEntry(function (err, current_entry) {
-            if (!err)
-                console.log(current_entry);
+            });
         });
 	});
 
@@ -78,20 +72,57 @@ module.exports = function(app, passport) {
 		var user = req.user;
 
 		graphFB.setAccessToken(user.facebook.token);
-		graphFB.get('/me/feed', function (err, reply) {
+        graphFB.get('/me/events', function (err, reply) {
 
-			//Twitter news feed
-			var twitt = new twitter_api({
-				consumer_key : configAuth.twitterAuth.consumerKey,
-				consumer_secret : configAuth.twitterAuth.consumerSecret,
-				access_token: user.twitter.token,
-				access_token_secret: user.twitter.token_secret
-			});
+            if (user.twitter.token != null) {
+                //Twitter news feed
+                var twitt = new twitter_api({
+                    consumer_key: configAuth.twitterAuth.consumerKey,
+                    consumer_secret: configAuth.twitterAuth.consumerSecret,
+                    access_token: user.twitter.token,
+                    access_token_secret: user.twitter.token_secret
+                });
 
-			twitt.get('statuses/home_timeline', function(err, data) {
-				res.render('feed.ejs', {facebook_data: reply.data, twitter_data: data});
-			});
+                twitt.get('statuses/home_timeline', function (err, data) {
+                    res.render('feed.ejs', {facebook_data: reply.data, twitter_data: data});
+                });
+            }
+            else {
+                res.render('feed.ejs', {facebook_data: reply.data, twitter_data: null});
+            }
 		});
+    });
+
+    //Toggl Reporting
+    app.get('/reports', function (req, res) {
+        var user = req.user.toggl;
+        var test_toggl = new toggl_report(configAuth.toggl.apiToken, user.email);
+
+        test_toggl.detailed({workspace_id: user.default_wid}, function (err, resus) {
+            //console.log(json_query('', {data:resus.data}).value);
+            res.render('reports.ejs', {report_data: json_query('', {data: resus.data}).value});
+
+            jsdom.env({
+                url: 'reports.ejs',
+                src: [jquery],
+                done: function (errors, window) {
+                    var $ = window.$;
+                    console.log("HN Links");
+                    $(function () {
+                        Morris.Area({
+                            element: 'morris-area-chart',
+                            data: json_query('', {data: resus.data}).value,
+                            xkey: 'start',
+                            ykeys: ['dur'],
+                            labels: ['dur'],
+                            pointSize: 2,
+                            hideHover: 'auto',
+                            resize: true
+                        });
+                    });
+                }
+            });
+        });
 	});
 
 	//Local Login
