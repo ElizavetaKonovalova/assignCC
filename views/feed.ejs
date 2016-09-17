@@ -1,33 +1,34 @@
-<head>
+<head xmlns="http://www.w3.org/1999/html">
 
 	<!-------CSS----------->
 	<link href="/vendorcss/bootstrap.min.css" rel="stylesheet">
 	<link href="/vendormentis/metisMenu.min.css" rel="stylesheet">
 	<link href="/vendordist/css/sb-admin-2.css" rel="stylesheet">
-	<link href="/vendormorrisjs/morris.css" rel="stylesheet">
 	<link rel="stylesheet" href="/vendordist/css/custom.css">
 	<link href="/vendorfont/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 	<!-----JS scripts--->
 	<script src="/vendorjq/jquery.min.js"></script>
 	<script src="/vendorjs/bootstrap.min.js"></script>
-	<script src="/vendorraph/raphael.min.js"></script>
-	<script src="/vendormentis/metisMenu.min.js"></script>
-	<script src="/vendorraph/raphael.min.js"></script>
 	<script src="/vendordist/js/sb-admin-2.js"></script>
 
-	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script>
+        (function() {
+            var cx = '000010664871652443808:1sdmkfknm2m';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+        })();
+    </script>
+
 </head>
 <body class="feed">
 
-<div class="form-inline" style="padding-top: 1%; padding-left: 30%;">
-    <div class="form-group has-warning" style="padding-right: 2%; padding-left: 2%;">
-        <label class="control-label" for="searchNews">Search more news: </label>
-        <input class="form-control" type="text" id="searchNews">
-    </div>
-    <input class="btn btn-info btn-lg" type="submit" id="submit" name="Search" value="Search">
-    <a href="/profile" class="btn btn-warning btn-lg">Go Back</a>
+<div class="form-inline" style="padding-top: 1%;">
+    <gcse:search enableAutoComplete="true"></gcse:search>
 </div>
 <div id="container" style="padding-left: 1%; padding-top: 2%;">
 	<div class="row">
@@ -86,7 +87,7 @@
 								</p>
 							</div>
 						</li>
-						<% };;;;; %>
+						<% }%>
 					</ul>
 				</div>
 			</div>
@@ -119,7 +120,7 @@
 								</p>
 							</div>
 						</li>
-                        <% };;;;; %>
+                        <% }%>
                     </ul>
 				</div>
 			</div>
@@ -129,10 +130,15 @@
 	</div>
 </div>
 
-<div style="width: 100%;">
-<iframe style="padding-left: 31%; padding-top: 1%; padding-bottom: 2%;" width="70%;" height="43%"
+<div class="form-inline">
+    <div class="form-group" style="padding-left: 2%;">
+        <a href="/profile" class="btn btn-warning btn-lg">Go Back</a>
+    </div>
+<div class="form-group" style="width: 100%;">
+<iframe style="padding-left: 31%; margin-top: -25px; padding-bottom: 2%;" width="70%;" height="43%"
 		src="https://www.youtube.com/embed/HbfLlDlJ1qA?autoplay=1"
 		frameborder="0" allowfullscreen ></iframe>
+</div>
 </div>
 
 </body>
