@@ -4,7 +4,36 @@ body {
     font-family: 'Shadows Into Light',
     cursive;
     font-size: 30px;
-    background-image: url('/vendordist/images/subtle_grunge.png');
+    background-image: url('/vendordist/images/giphy.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-origin: content-box;
+}
+
+.feed
+{
+    background-color: white;
+    text-align: start;
+    height: 100%;
+    overflow: hidden;
+    font-size: medium;
+    padding: 0px 0px;
+}
+
+a { display:block; /* Pre-existing code */ }
+a.inline {
+    display:inline;
+}
+
+p
+{
+    word-wrap: break-word;
+}
+
+.col-md-4
+{
+    width:33%;
 }
 
 h3 {
@@ -19,10 +48,9 @@ h2 {
 }
 
 .social {
-    position: relative;
     height: 3em;
     width: 13.5em;
-    margin: 150px 450px;
+    position: relative;
 }
 
 .social li {
@@ -71,42 +99,28 @@ h2 {
 
 .facebook {
     background: #155b9d;
-    left: 0;
-    top: 0%;
+    right: 140%;
+    top:30%;
     border-radius: 15px;
 }
 
 .twitter {
     background: #1a9ec4;
-    bottom: 0;
-    left: 25%;
+    top: 160%;
+    right: 140%;
     border-radius: 15px;
 }
 
 .google_plus {
     background: #e11a30;
-    left: 50%;
-    top: 0%;
-    border-radius: 15px;
-}
-
-.local_login {
-    background: #3f7aa3;
-    bottom: 0;
-    left: 75%;
+    right: 140%;
+    top:290%;
     border-radius: 15px;
 }
 
 .todoist {
     background: #e11a30;
-    top: 100%;
-    left: -25%;
-    border-radius: 15px;
-}
-
-.local_singup {
-    background: #3f7aa3;
-    bottom: 0;
-    left: 100%;
+    top: 440%;
+    right: 140%;
     border-radius: 15px;
 }

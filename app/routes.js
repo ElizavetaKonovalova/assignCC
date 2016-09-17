@@ -6,9 +6,12 @@ var twitter_api = require('twit');
 var configAuth = require('../config/auth');
 var toggl = require('toggl-api');
 var toggl_report = require('toggl-reports');
+var google = require('googleapis');
+var google_plus = google.plus('v1');
 var express = require('express');
+var co = require('co');
 var jsdom = require('jsdom');
-var jquery = require('jquery');
+var moment = require('moment');
 
 module.exports = function(app, passport) {
 
@@ -70,12 +73,31 @@ module.exports = function(app, passport) {
 
 	app.get('/read_news', function(req, res) {
 		var user = req.user;
-
 		graphFB.setAccessToken(user.facebook.token);
-        graphFB.get('/me/events', function (err, reply) {
+
+        graphFB.get('/me/likes', function (err, reply) {
+
+            var facebook_data;
+            var liked_pages;
+
+            if(reply.data != null)
+            {
+                liked_pages = json_query('id', {data: reply.data}).value;
+                for(i = 0; i < liked_pages.length; i++)
+                {
+                    graphFB.get(liked_pages[i] + '/feed', function (error, data_received) {
+                        facebook_data = data_received.data;
+                    });
+                }
+            }
+            else
+            {
+                graphFB.get('/me/feed', function (err, null_likes) {
+                    facebook_data = null_likes.data;
+                });
+            }
 
             if (user.twitter.token != null) {
-                //Twitter news feed
                 var twitt = new twitter_api({
                     consumer_key: configAuth.twitterAuth.consumerKey,
                     consumer_secret: configAuth.twitterAuth.consumerSecret,
@@ -83,61 +105,49 @@ module.exports = function(app, passport) {
                     access_token_secret: user.twitter.token_secret
                 });
 
-                twitt.get('statuses/home_timeline', function (err, data) {
-                    res.render('feed.ejs', {facebook_data: reply.data, twitter_data: data});
+                twitt.get('statuses/home_timeline', {count:50}, function (err, data) {
+                    sendRequest('https://newsapi.org/v1/articles?source=techcrunch&apiKey=ec1a9e6ec5084a32afd0ffb5d2362b40',
+                        function (error, response, body) {
+                            if (!error && response.statusCode == 200) {
+                                tech_news = JSON.parse(body);
+                                res.render('feed.ejs', {facebook_data: facebook_data, twitter_data: data,
+                                    twitter_urls: json_query('entities.urls.url', {data: data}).value,
+                                    techcrunch: json_query('articles', {data: tech_news}).value});
+                            }
+                            else {
+                                res.render('feed.ejs', {facebook_data: facebook_data, twitter_data: data,
+                                    twitter_urls: json_query('entities.urls.url', {data: data}).value,
+                                    techcrunch: null});
+                            }
+                        });
                 });
             }
             else {
-                res.render('feed.ejs', {facebook_data: reply.data, twitter_data: null});
+                res.render('feed.ejs', {facebook_data: facebook_data, twitter_data: null});
             }
-		});
+        });
+
     });
 
-    //Toggl Reporting
+    //Reporting
     app.get('/reports', function (req, res) {
+        //res.render('reports.ejs');
+
         var user = req.user.toggl;
         var test_toggl = new toggl_report(configAuth.toggl.apiToken, user.email);
 
         test_toggl.detailed({workspace_id: user.default_wid}, function (err, resus) {
-            //console.log(json_query('', {data:resus.data}).value);
-            res.render('reports.ejs', {report_data: json_query('', {data: resus.data}).value});
-
-            jsdom.env({
-                url: 'reports.ejs',
-                src: [jquery],
-                done: function (errors, window) {
-                    var $ = window.$;
-                    console.log("HN Links");
-                    $(function () {
-                        Morris.Area({
-                            element: 'morris-area-chart',
-                            data: json_query('', {data: resus.data}).value,
-                            xkey: 'start',
-                            ykeys: ['dur'],
-                            labels: ['dur'],
-                            pointSize: 2,
-                            hideHover: 'auto',
-                            resize: true
-                        });
-                    });
-                }
-            });
+        	report_data = json_query('', {data: resus.data}).value;
+            var start_datetime = json_query('start', {data:report_data}).value;
+            var end_time = json_query('end', {data:report_data}).value;
+            //console.log(end_time);
+            res.render('reports.ejs', {start:start_datetime, end: end_time, moment:moment});
         });
 	});
 
-	//Local Login
-	app.get('/login', function(req, res){res.render('login.ejs', { message: req.flash('loginMessage') });});
-	app.post('/login',passport.authenticate('local-login',{successRedirect:'/profile',failureRedirect:'/login',
-		failureFlash : true}));
-
-	//Local Sign up
-	app.get('/signup',function(req, res){res.render('signup.ejs',{message:req.flash('loginMessage')});});
-	app.post('/signup', passport.authenticate('local-signup',{successRedirect:'/profile',failureRedirect:'/signup',
-		failureFlash : true}));
-
 	//Facebook Authentication
 	app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['public_profile,email,user_actions.news,' +
-	'user_actions.video,user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,rsvp_event,' +
+	'user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,rsvp_event,' +
 	'user_friends,user_managed_groups,read_page_mailboxes '] }));
 	app.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect:'/profile',failureRedirect:'/'}));
 
@@ -153,14 +163,9 @@ module.exports = function(app, passport) {
 	app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 	app.get('/auth/google/callback', passport.authenticate('google', {successRedirect : '/profile',failureRedirect : '/'}));
 
-	//Connect Local
-	app.get('/connect/local', function(req, res){res.render('connect-local.ejs',{message: req.flash('loginMessage')});});
-	app.post('/connect/local',passport.authenticate('local-signup',{successRedirect:'/profile',failureRedirect : '/connect/local',
-			failureFlash : true}));
-
 	//Connect Facebook
 	app.get('/connect/facebook', passport.authorize('facebook', {scope : ['public_profile,email,user_actions.news,' +
-	'user_actions.video,user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,user_managed_groups,' +
+	'user_events,user_likes,user_photos,user_posts,manage_pages,publish_pages,user_managed_groups,' +
 	'rsvp_event,user_friends,read_page_mailboxes']}));
 	app.get('/connect/facebook/callback',passport.authorize('facebook',{successRedirect:'/profile',failureRedirect : '/'}));
 
@@ -178,15 +183,6 @@ module.exports = function(app, passport) {
 	app.get('/connect/todoist', passport.authorize('todoist',{scope:['data:read_write', 'data:delete'],state: 'secretstring'}));
 	app.get('/connect/todoist/callback',passport.authorize('todoist',{successRedirect : '/profile',
 		failureRedirect : '/'}));
-
-	app.get('/unlink/local', function(req, res) {
-		var user = req.user;
-		user.local.email = undefined;
-		user.local.password = undefined;
-		user.save(function(err) {
-			res.redirect('/profile');
-		});
-	});
 
 	app.get('/unlink/facebook', function(req, res) {
 		var user = req.user;

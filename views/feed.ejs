@@ -5,6 +5,7 @@
 	<link href="/vendormentis/metisMenu.min.css" rel="stylesheet">
 	<link href="/vendordist/css/sb-admin-2.css" rel="stylesheet">
 	<link href="/vendormorrisjs/morris.css" rel="stylesheet">
+	<link rel="stylesheet" href="/vendordist/css/custom.css">
 	<link href="/vendorfont/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 	<!-----JS scripts--->
@@ -18,143 +19,21 @@
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 </head>
-<body>
-<div id="wrapper">
+<body class="feed">
 
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="index.html">SB Admin v2.0</a>
-		</div>
-		<!-- /.navbar-header -->
-
-		<ul class="nav navbar-top-links navbar-right">
-			<li class="dropdown">
-				<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
-				</a>
-			</li>
-		</ul>
-		<!-- /.navbar-top-links -->
-
-		<div class="navbar-default sidebar" role="navigation">
-			<div class="sidebar-nav navbar-collapse">
-				<ul class="nav" id="side-menu">
-					<li class="sidebar-search">
-						<div class="input-group custom-search-form">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-						</div>
-						<!-- /input-group -->
-					</li>
-					<li>
-						<a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-					</li>
-					<li>
-						<a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li>
-								<a href="flot.html">Flot Charts</a>
-							</li>
-							<li>
-								<a href="morris.html">Morris.js Charts</a>
-							</li>
-						</ul>
-						<!-- /.nav-second-level -->
-					</li>
-					<li>
-						<a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
-					</li>
-					<li>
-						<a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>
-					</li>
-					<li>
-						<a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li>
-								<a href="panels-wells.html">Panels and Wells</a>
-							</li>
-							<li>
-								<a href="buttons.html">Buttons</a>
-							</li>
-							<li>
-								<a href="notifications.html">Notifications</a>
-							</li>
-							<li>
-								<a href="typography.html">Typography</a>
-							</li>
-							<li>
-								<a href="icons.html"> Icons</a>
-							</li>
-							<li>
-								<a href="grid.html">Grid</a>
-							</li>
-						</ul>
-						<!-- /.nav-second-level -->
-					</li>
-					<li>
-						<a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span
-									class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li>
-								<a href="#">Second Level Item</a>
-							</li>
-							<li>
-								<a href="#">Second Level Item</a>
-							</li>
-							<li>
-								<a href="#">Third Level <span class="fa arrow"></span></a>
-								<ul class="nav nav-third-level">
-									<li>
-										<a href="#">Third Level Item</a>
-									</li>
-									<li>
-										<a href="#">Third Level Item</a>
-									</li>
-									<li>
-										<a href="#">Third Level Item</a>
-									</li>
-									<li>
-										<a href="#">Third Level Item</a>
-									</li>
-								</ul>
-								<!-- /.nav-third-level -->
-							</li>
-						</ul>
-						<!-- /.nav-second-level -->
-					</li>
-					<li>
-						<a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li>
-								<a href="blank.html">Blank Page</a>
-							</li>
-							<li>
-								<a href="login.html">Login Page</a>
-							</li>
-						</ul>
-						<!-- /.nav-second-level -->
-					</li>
-				</ul>
-			</div>
-			<!-- /.sidebar-collapse -->
-		</div>
-		<!-- /.navbar-static-side -->
-	</nav>
-
+<div class="form-inline" style="padding-top: 1%; padding-left: 30%;">
+    <div class="form-group has-warning" style="padding-right: 2%; padding-left: 2%;">
+        <label class="control-label" for="searchNews">Search more news: </label>
+        <input class="form-control" type="text" id="searchNews">
+    </div>
+    <input class="btn btn-info btn-lg" type="submit" id="submit" name="Search" value="Search">
+    <a href="/profile" class="btn btn-warning btn-lg">Go Back</a>
+</div>
+<div id="container" style="padding-left: 1%; padding-top: 2%;">
 	<div class="row">
 
 		<!-----Facebook----->
-		<div class="col-sm-3">
+		<div class="col-md-4">
 			<% if (facebook_data != null) { %>
 			<div class="chat-panel panel panel-primary">
 				<div class="panel-heading">
@@ -163,17 +42,21 @@
 				<div class="panel-body">
 					<ul class="chat">
 						<% for(var i = 0; i < facebook_data.length; i++) { %>
-						<li class="left clearfix">
+						<li class="left clearfix" style="margin-left: -40px;">
 							<div class="chat-body clearfix">
+                                <%if(facebook_data[i].message != null) {%>
 								<p>
 									<%= facebook_data[i].message %>
 								</p>
+                                <%};%>
+                                <%if(facebook_data[i].story != null){%>
 								<p>
 									<%= facebook_data[i].story %>
 								</p>
+                                <%};%>
 							</div>
 						</li>
-						<% };; %>
+						<% } %>
 					</ul>
 				</div>
 			</div>
@@ -181,7 +64,7 @@
 		</div>
 
 		<!-----Twitter----->
-		<div class="col-sm-5">
+		<div class="col-md-4">
 			<% if (twitter_data != null) { %>
 			<div class="chat-panel panel panel-info">
 				<div class="panel-heading">
@@ -191,15 +74,19 @@
 				<div class="panel-body">
 					<ul class="chat">
 						<% for(var i = 0; i < twitter_data.length; i++) { %>
-						<li class="left clearfix">
+						<li class="left clearfix" style="margin-left: -40px;">
 							<div class="chat-body clearfix">
 								<p>
 									<%= twitter_data[i].text %> <br><br>
-									<b>Posted by: </b><%= twitter_data[i].user.name %>
+
+									<strong>Read:</strong><a href=<%= twitter_urls[i] %> target="_blank"><%= twitter_urls[i] %></a><br><br>
+
+									<b>Posted by: </b><i><a href=<%= twitter_data[i].user.url %> target="_blank">
+											<%= twitter_data[i].user.name %></a></i>
 								</p>
 							</div>
 						</li>
-						<% };; %>
+						<% };;;;; %>
 					</ul>
 				</div>
 			</div>
@@ -207,7 +94,45 @@
 			<% } %>
 		</div>
 
-		<!-----Google Plus----->
+		<!-----TechCrunch----->
+		<div class="col-md-4">
+			<% if (techcrunch != null) { %>
+			<div class="chat-panel panel panel-green">
+				<div class="panel-heading">
+					<i class="fa fa-newspaper-o fa-lg" aria-hidden="true"></i> TechCrunch
+				</div>
+
+				<div class="panel-body">
+					<ul class="chat">
+						<% for(var i = 0; i < techcrunch.length; i++) { %>
+						<li class="left clearfix" style="margin-left: -40px;">
+							<div class="chat-body clearfix">
+								<p>
+									<strong><%= techcrunch[i].title %> </strong><br><br>
+									<%= techcrunch[i].description %> <br><br>
+
+									<img src=<%= techcrunch[i].urlToImage %> style="width:100%;height:228px;"><br>
+
+									<strong>Read:</strong> <a href=<%= techcrunch[i].url %> target="_blank"><%= techcrunch[i].url %></a><br>
+
+									<strong>Posted by:</strong> <i><%= techcrunch[i].author %></i> <br>
+								</p>
+							</div>
+						</li>
+                        <% };;;;; %>
+                    </ul>
+				</div>
+			</div>
+
+			<% } %>
+		</div>
 	</div>
 </div>
+
+<div style="width: 100%;">
+<iframe style="padding-left: 31%; padding-top: 1%; padding-bottom: 2%;" width="70%;" height="43%"
+		src="https://www.youtube.com/embed/HbfLlDlJ1qA?autoplay=1"
+		frameborder="0" allowfullscreen ></iframe>
+</div>
+
 </body>

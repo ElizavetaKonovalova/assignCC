@@ -22,5 +22,8 @@ module.exports = {
 	},
 	'toggl': {
 		'apiToken': 'e79952b6183cdf8442a605d148a18550'
+	},
+	'google_api': {
+		'api_key': 'AIzaSyDHd1saTmTZShjWiy12Mi23UaPuY7mvoHM'
 	}
 };

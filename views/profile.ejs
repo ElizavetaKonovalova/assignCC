@@ -1,49 +1,26 @@
 <html>
 <head>
-	<title>Node Authentication</title>
+    <title>Social Reader</title>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-        body {
-            padding-top: 80px;
-            word-wrap: break-word;
-        }
-	</style>
+	<link rel="stylesheet" href="/vendordist/css/custom.css">
 </head>
 <body>
 <div class="container">
 
 	<div class="page-header text-center">
-		<h1><span class="fa fa-anchor"></span>All Accounts Info</h1>
-		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
-		<a href="/read_news" class="btn btn-primary btn-sm">Read News</a>
-        <a href="/reports" class="btn btn-danger btn-sm">Reports</a>
+		<a href="/logout" class="btn btn btn-warning btn-lg">Logout</a>
+		<a href="/read_news" class="btn btn-success btn-lg">Read News</a>
 	</div>
 
 	<div class="row">
-		<div class="col-sm-6">
-			<div class="well">
-				<h3><span class="fa fa-user"></span> Local</h3>
-
-				<% if (user.local.email) { %>
-					<p>
-						<strong>email</strong>: <%= user.local.email %><br>
-					</p>
-					
-					<a href="/unlink/local" class="btn btn-default">Unlink</a>
-                <% }; else { %>
-					<a href="/connect/local" class="btn btn-default">Connect Local</a>
-				<% } %>
-
-			</div>
-		</div>
 		<!-- FACEBOOK INFORMATION -->
 		<div class="col-sm-6">
 			<div class="well">
 				<h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
 				<% if (user.facebook.token) { %>
 					<p>
-						<strong>name</strong>: <%= user.facebook.name %><br>
+						<strong>Username</strong>: <%= user.facebook.name %><br>
 					</p>
 
 					<a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
@@ -53,8 +30,6 @@
 
 			</div>
 		</div>
-	</div>
-	<div class="row">
 
 		<!-- TWITTER INFORMATION -->
 		<div class="col-sm-6">
@@ -62,17 +37,19 @@
 				<h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
 
 				<% if (user.twitter.token) { %>
-					<p>
-						<strong>Name:</strong>: <%= user.twitter.displayName %><br>
-					</p>
+				<p>
+					<strong>Username</strong>: <%= user.twitter.displayName %><br>
+				</p>
 
-					<a href="/unlink/twitter" class="btn btn-info">Unlink</a>
-                <% }; else { %>
-					<a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+				<a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+				<% }; else { %>
+				<a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
 				<% } %>
 
 			</div>
 		</div>
+	</div>
+	<div class="row">
 
 		<!-- GOOGLE INFORMATION -->
 		<div class="col-sm-6">
@@ -81,35 +58,34 @@
 
 				<% if (user.google.token) { %>
 					<p>
-						<strong>Email;</strong>: <%= user.google.email %><br>
-						<strong>Name:</strong>: <%= user.google.name %>
+						<strong>Username</strong>: <%= user.google.name %>
 					</p>
 
 					<a href="/unlink/google" class="btn btn-danger">Unlink</a>
-                <% };; else { %>
+                <% }; else { %>
 					<a href="/connect/google" class="btn btn-danger">Connect Google</a>
 				<% } %>
 
 			</div>
 		</div>
-	</div>
 
-	<!-- TODOIST INFORMATION -->
-	<div class="col-sm-6">
-		<div class="well">
-			<h3 class="text-info"><span class="fa fa-twitter"></span> Todoist</h3>
+		<!-- TODOIST INFORMATION -->
+		<div class="col-sm-6">
+			<div class="well">
+				<h3 class="text-danger"><i class="fa fa-angle-double-down"></i></span> Todoist</h3>
 
-			<% if (user.todoist.token) { %>
-			<p>
-				<strong>Full Name:</strong>: <%= user.todoist.full_name %><br>
-				<strong>Email:</strong>: <%= user.todoist.email %><br>
-			</p>
+				<% if (user.todoist.token) { %>
+				<p>
+					<strong>Username</strong>: <%= user.todoist.full_name %><br>
+				</p>
 
-			<a href="/unlink/todoist" class="btn btn-info">Unlink</a>
-            <% };; else { %>
-			<a href="/connect/todoist" class="btn btn-info">Connect Todoist</a>
-			<% } %>
+				<a href="/unlink/todoist" class="btn btn-danger">Unlink</a>
+				<% }; else { %>
+				<a href="/connect/todoist" class="btn btn-danger">Connect Todoist</a>
+				<% } %>
+			</div>
 		</div>
+
 	</div>
 </div>
 </body>

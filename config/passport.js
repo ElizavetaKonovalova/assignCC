@@ -6,7 +6,9 @@ var TodoistStrategy = require('passport-todoist').Strategy;
 var User = require('../app/user');
 var configAuth = require('./auth');
 
-module.exports = function(passport) {
+module.exports = function(passport)
+{
+
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -15,69 +17,6 @@ module.exports = function(passport) {
             done(err, user);
         });
     });
-    passport.use('local-login',new LocalStrategy({usernameField:'email',passwordField:'password',passReqToCallback:true},
-    function(req, email, password, done) {
-        process.nextTick(function() {
-            User.findOne({ 'local.email' :  email }, function(err, user) {
-                if (err)
-                    return done(err);
-                if (!user)
-                    return done(null, false, req.flash('loginMessage', 'No user found.'));
-                if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-                else
-                    return done(null, user);
-            });
-        });
-
-    }));
-
-    passport.use('local-signup', new LocalStrategy({
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true
-    },
-    function(req, email, password, done) {
-        process.nextTick(function() {
-            User.findOne({'local.email': email}, function(err, existingUser) {
-                if (err)
-                    return done(err);
-
-                // check to see if there's already a user with that email
-                if (existingUser) 
-                    return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-
-                //  If we're logged in, we're connecting a new local account.
-                if(req.user) {
-                    var user            = req.user;
-                    user.local.email    = email;
-                    user.local.password = user.generateHash(password);
-                    user.save(function(err) {
-                        if (err)
-                            throw err;
-                        return done(null, user);
-                    });
-                } 
-                //  We're not logged in, so we're creating a brand new user.
-                else {
-                    // create the user
-                    var newUser            = new User();
-
-                    newUser.local.email    = email;
-                    newUser.local.password = newUser.generateHash(password);
-
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
-
-                        return done(null, newUser);
-                    });
-                }
-
-            });
-        });
-
-    }));
 
     passport.use(new FacebookStrategy({
         clientID : configAuth.facebookAuth.clientID,
@@ -210,6 +149,8 @@ module.exports = function(passport) {
 
     }));
 
+
+    //Google API Strategy
     passport.use(new GoogleStrategy({
         clientID        : configAuth.googleAuth.clientID,
         clientSecret    : configAuth.googleAuth.clientSecret,
